@@ -1,0 +1,3 @@
+# Numbers, statistics, datas...
+
+Here i will write what i will understand with my attempts

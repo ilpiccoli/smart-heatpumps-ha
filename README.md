@@ -1,4 +1,4 @@
-# smart-heatpumps-ha
+# Smart Heatpumps HA (HomeAssistant)
 
 ## Intro
 This github repository is actually a **WORK IN PROGRESS**, it will be regularly updated based on my tests and is made based on my specific home setup.

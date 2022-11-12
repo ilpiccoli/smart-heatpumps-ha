@@ -6,7 +6,7 @@ I hope it will help other people in the same situation as mine.
 
 Any hint, suggestion or comment on the *Discussion* page is really appreciated.
 
-You can also follow the updates from the community on the official HomeAssistant forum here: [link]
+You can also follow the updates from the community on the official HomeAssistant forum here: [Forum Discussion](https://community.home-assistant.io/t/transform-my-heatpumps-into-smart-heatpumps-with-solar/488002)
 
 If you want to support me you can [buy me a coffee](https://www.buymeacoffee.com/ilpiccoli).
 

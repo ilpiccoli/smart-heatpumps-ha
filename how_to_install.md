@@ -1,5 +1,5 @@
 # How to install
-To install the "program" you simply need to copy the files in the folder *to_copy* (inserire link) in this way:
+To install the "program" you simply need to copy the files in the folder [*to_copy*](https://github.com/ilpiccoli/smart-heatpumps-ha/tree/main/to_insert) in this way:
 
 ## Automations
 You need to copy those files into your *automations* folder or copy their content into your *automations.yaml* file or copy it under the *automations:* part in your *configuration.yaml* file:

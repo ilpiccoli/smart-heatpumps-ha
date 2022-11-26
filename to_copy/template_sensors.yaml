@@ -1,0 +1,56 @@
+- platform: template
+  sensors:
+    heatpump_to_start:
+        unique_id: heatpump_to_start
+        friendly_name: 'Next heatpump to be started'
+        value_template: >
+            {%- set d = [
+            {'unit': 'climate.daikin_living_room',
+            'state': states('climate.daikin_living_room'),
+            'temp': states('sensor.living_room_temperature') | float(100)},
+            {'unit':'climate.daikin_room_1',
+            'state': states('climate.daikin_room_1'),
+            'temp': states('sensor.room_1_temperature') | float(100)},
+            {'unit':'climate.daikin_room_2_temperature',
+            'state': states('climate.daikin_room_2_temperature'),
+            'temp': states('sensor.room_2_temperature')|float(100)},
+            {'unit':'climate.daikin_room_3_temperature',
+            'state': states('climate.daikin_room_3_temperature'),
+            'temp': states('sensor.room_3_temperature')|float(100)},
+            {'unit':'climate.daikin_room_4_temperature',
+            'state': states('climate.daikin_room_4_temperature'),
+            'temp': states('sensor.room_4_temperature')|float(100)}
+            ] %}
+            
+            {{ (d | selectattr('state', 'eq', 'off') | sort(attribute = 'temp') | first)['unit'] }}
+
+- platform: template
+  sensors:
+    heatpump_to_stop:
+        unique_id: heatpump_to_stop
+        friendly_name: 'Next heatpump to be stopped'
+        value_template: >
+            {%- set d = [
+            {'unit': 'climate.daikin_living_room',
+            'state': states('climate.daikin_living_room'),
+            'temp': states('sensor.living_room_temperature') | float(100)},
+            {'unit':'climate.daikin_room_1',
+            'state': states('climate.daikin_room_1'),
+            'temp': states('sensor.room_1_temperature') | float(100)},
+            {'unit':'climate.daikin_room_2_temperature',
+            'state': states('climate.daikin_room_2_temperature'),
+            'temp': states('sensor.room_2_temperature')|float(100)},
+            {'unit':'climate.daikin_room_3_temperature',
+            'state': states('climate.daikin_room_3_temperature'),
+            'temp': states('sensor.room_3_temperature')|float(100)},
+            {'unit':'climate.daikin_room_4_temperature',
+            'state': states('climate.daikin_room_4_temperature'),
+            'temp': states('sensor.room_4_temperature')|float(100)}
+            ] %}
+            
+            {{ (d | selectattr('state', 'eq', 'heat' ) | sort(attribute = 'temp') | last)['unit'] }}
+
+
+
+
+

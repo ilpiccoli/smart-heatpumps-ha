@@ -1,0 +1,291 @@
+########################################
+# START HEATPUMPS BASED ON TEMPERATURE #
+########################################
+- id: start_heatpumps_solar
+  alias: Start heatpumps with solar power
+  trigger:
+    # Start as soon as automation is turned on
+  - platform: state
+    entity_id: input_boolean.auto_heatpumps
+    to: 'on'
+    # Meter reading below 325W for last 5 minutes
+  - platform: state
+    entity_id: binary_sensor.start_heatpumps
+    to: 'on'
+    # Meter reading below 1000W in the last 15 minutes
+  - platform: state
+    entity_id: binary_sensor.stop_heatpumps_consumption
+    to: 'off'
+    # 10 minutes since last heatpump started
+  - platform: event
+    event_type: timer.finished
+    event_data:
+      entity_id: timer.wait_time_start_heatpump
+    # 
+  - platform: event
+    event_type: timer.finished
+    event_data:
+      entity_id: timer.start_self_consumption
+    # Meter reading below 400W in last 5 minutes
+  - platform: numeric_state
+    entity_id: sensor.meter_reading_filtered
+    below: '400'
+    for: '00:05:00'
+    # Check every 15 minutes
+  - platform: time_pattern
+    minutes: '/15'
+  condition:
+    # Between sunrise and sunset
+  - condition: state
+    entity_id: sun.sun
+    state: "above_horizon"
+    # Automation is on
+  - condition: state
+    entity_id: input_boolean.auto_heatpumps
+    state: 'on'
+    # Meter reading below 325W for last 5 minutes
+  - condition: state
+    entity_id: binary_sensor.start_heatpumps
+    state: 'on'
+    # Enough power to start another heatpump
+  - condition: numeric_state
+    entity_id: sensor.meter_reading_filtered
+    below: '600'
+    # Someone home in last 12 hours
+  - condition: state
+    entity_id: binary_sensor.away_mode_heatpumps
+    state: 'off'
+    # Meter reading below 1000W in last 15 minutes
+  - condition: state
+    entity_id: binary_sensor.stop_heatpumps_consumption
+    state: 'off'
+  action:
+  - choose:
+    # Heatpump to start = Living Room
+    - conditions: 
+      - "{{ states('sensor.heatpump_to_start') == 'climate.daikin_living_room' }}"
+      # Living room temperature < 19°C
+      - condition: numeric_state
+        entity_id: sensor.living_room_temperature
+        below: '19'
+      sequence:
+      - service: script.turn_on
+        target:
+          entity_id: script.turn_on_cycle_living_room
+    # Heatpump to start = other, in this case for example Room 1
+    # Copy this template for any heatpump you need
+    - conditions: 
+      - "{{ states('sensor.heatpump_to_start') == 'climate.daikin_room_1' }}"
+      # Room 1 temperature < 18.5°C
+      - condition: numeric_state
+        entity_id: sensor.room_1_temperature
+        below: '18.5'
+      sequence:
+      - service: script.turn_on
+        target:
+          entity_id: script.turn_on_cycle_room_1
+    
+
+#######################
+# REDUCE CONSUMPTIONS #
+#######################
+- id: reduce_consumptions_heatpumps
+  alias: Gradually turn off heatpumps to reduce consumptions
+  trigger:
+  # Meter reading above 700W for 10 minutes
+  - platform: state
+    entity_id: binary_sensor.reduce_consumptions_heatpumps
+    to: 'on'
+  # Meter reading above 1000W for 3 minutes
+  - platform: state
+    entity_id: binary_sensor.stop_heatpumps_consumption
+    to: 'on'
+  condition:
+    # Automation is on
+  - condition: state
+    entity_id: input_boolean.auto_heatpumps
+    state: 'on'
+  # Between sunrise and sunset
+  - condition: state
+    entity_id: sun.sun
+    state: "above_horizon"
+  action:
+  - choose:
+    # Heatpump to stop = Living Room
+    - conditions: 
+      - "{{ states('sensor.heatpump_to_stop') == 'climate.daikin_living_room' }}"
+      sequence:
+      - service: script.turn_on
+        target:
+          entity_id: script.turn_off_cycle_living_room
+    # Heatpump to stop = other (in this case room 1)
+    # Copy this template for any heatpump you need
+    - conditions: 
+      - "{{ states('sensor.heatpump_to_stop') == 'climate.daikin_room_1' }}"
+      sequence:
+      - service: script.turn_on
+        target:
+          entity_id: script.turn_on_cycle_room_1
+
+##########################
+# TURN OFF ALL HEATPUMPS #
+##########################
+- id: shutdown_heatpumps_solar
+  alias: Shutdown heatpumps with solar
+  trigger:
+  # Meter reading above 700W for 45 minutes
+  - platform: state
+    entity_id: binary_sensor.start_heatpumps
+    to: 'off'
+  # Meter reading above 1400W
+  - platform: state
+    entity_id: binary_sensor.stop_heatpumps_emergency
+    to: 'on'
+  condition:
+    # Between sunrise and sunset
+  - condition: state
+    entity_id: sun.sun
+    state: "above_horizon"
+    # Automation is on
+  - condition: state
+    entity_id: input_boolean.auto_heatpumps
+    state: 'on'
+  action:
+    # Turn off heatpumps
+  - service: homeassistant.turn_off
+    target:
+      entity_id: group.heatpumps
+  - delay: '00:00:05'
+     # Turn on radiators
+  - service: climate.set_hvac_mode
+    target:
+      entity_id: climate.netatmo_living_room
+    data:
+      hvac_mode: 'auto'
+
+################################
+# REMOVE STOP WHEN UNNECESSARY #
+################################
+- id: remove_stop_heatpumps
+  alias: Bypass stop if heatpumps are all off
+  description: 'Bypass stop if heatpumps are all off'
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.stop_heatpumps_consumption
+    to: 'on'
+  condition:
+  - entity_id: group.heatpumps
+    condition: state
+    state: 'off'
+  action:
+  - service: homeassistant.turn_off
+    target:
+      entity_id: binary_sensor.stop_heatpumps_consumption
+      
+#################
+# AWAY MODE OFF #
+#################
+- id: turn_off_away_mode_heatpumps
+  alias: Turn off away mode heatpumps
+  description: 'Turn off away mode for heatpumps if someone is home'
+  trigger:
+  - platform: state
+    entity_id: group.family
+    to: 'home'
+  condition:
+  action:
+  - service: homeassistant.turn_on
+    target:
+      entity_id: binary_sensor.away_mode_heatpumps
+      
+#################################
+# STOP -> TURN OFF START SENSOR #
+#################################
+- id: disable_start_heatpumps
+  alias: Disable binary sensor to start heatpumps if they were stopped
+  description: 'Disable binary sensor to start heatpumps if they were stopped for consumptions'
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.stop_heatpumps_consumption
+    to: 'on'
+  - platform: state
+    entity_id: binary_sensor.stop_heatpumps_emergency
+    to: 'on'
+  condition:
+  action:
+  - service: homeassistant.turn_off
+    target:
+      entity_id: binary_sensor.start_heatpumps 
+      
+##########################################
+# READING > 700W = TURN OFF START SENSOR #
+##########################################
+- id: disable_start_heatpumps_700w
+  alias: Disable binary sensor to start heatpumps if they were stopped for exceeding 700W
+  description: 'Disable binary sensor to start heatpumps if they were stopped for exceeding 700W for 45 minutes'
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.meter_reading_filtered
+    above: '700'
+    for: '00:45:00'
+  condition:
+  action:
+  - service: homeassistant.turn_off
+    target:
+      entity_id: binary_sensor.start_heatpumps
+         
+################################
+# TIMER TO POWER OFF HEATPUMPS #
+################################
+- id: timer_stop_heatpumps 1000W
+  alias: Start a 3 minutes timer when meter reading is above 1000W
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.meter_reading_filtered
+    above: '1000'
+  action:
+  - service: timer.start
+    target:
+      entity_id: timer.stop_self_consumption
+      
+#########################
+# RESET POWER OFF TIMER #
+#########################
+- id: reset_timer_stop_heatpumps
+  alias: Reset 3 minutes timer for heatpumps
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.meter_reading_filtered
+    below: '1000'
+  action:
+  - service: timer.cancel
+    target:
+      entity_id: timer.stop_self_consumption
+      
+#########################
+# TIMER START HEATPUMPS #
+#########################
+- id: timer_start_self_consumption
+  alias: Start a timer when meter reading is below threshold
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.meter_reading_filtered
+    below: '325'
+  action:
+  - service: timer.start
+    target:
+      entity_id: timer.start_self_consumption
+      
+###############################
+# RESET TIMER START HEATPUMPS #
+###############################
+- id: reset_timer_start_heatpumps
+  alias: Reset timer when reading is above threshold
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.meter_reading_filtered
+    above: '325'
+  action:
+  - service: timer.cancel
+    target:
+      entity_id: timer.start_self_consumption

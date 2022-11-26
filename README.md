@@ -11,6 +11,7 @@ If you want to support me you can [buy me a coffee](https://www.buymeacoffee.com
 
 ## How to install
 Check if you satisfy all the pre-requisites in the [related](https://github.com/ilpiccoli/smart-heatpumps-ha/blob/main/pre-requisites.md) page
+
 Follow the instructions on the [How to install](https://github.com/ilpiccoli/smart-heatpumps-ha/blob/main/how_to_install.md) file
 
 ## Setup and needings

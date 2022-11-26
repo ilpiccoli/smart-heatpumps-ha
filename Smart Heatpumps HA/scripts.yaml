@@ -1,0 +1,85 @@
+#########################################################################
+###                         T U R N  O N                              ###
+#########################################################################
+
+#################
+# Turn on cycle #
+#################
+
+#Copy this for every heatpump changing variables name to turn on HVAC and turn off radiators
+
+turn_on_cycle_living_room:
+  sequence:
+    # Turn on HVAC
+    - service: climate.turn_on
+      entity_id: climate.daikin_living_room
+    - delay: '00:00:05'
+    # Set temperature to 19°C
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.daikin_living_room
+      data:
+        temperature: '20'
+        hvac_mode: 'heat'
+    - delay: '00:00:15'
+    # Set to ECO mode (reduce starting peak consumption)
+    - service: climate.set_preset_mode
+      target:
+        entity_id: climate.daikin_living_room
+      data:
+        preset_mode: "Eco"
+    - delay: '00:00:05'
+    # Set fan to Auto mode
+    - service: climate.set_fan_mode
+      target:
+        entity_id: climate.daikin_living_room
+      data:
+        fan_mode: "Auto"
+    # Start timer
+    - service: timer.start
+      target:
+        entity_id: timer.wait_time_start_heatpump
+    - delay: '00:00:05'
+    # Turn off radiators
+    - service: climate.turn_off
+      entity_id: climate.netatmo_living_room
+    # Send notification
+    - service: notify.telegram
+      data_template:
+        title: '*Heatpump Living Room*'
+        message: >
+            Working in self consumption
+            
+            Meter Reading: {{states('sensor.meter_reading_filtered')}} W,
+            Temperature: {{states('sensor.temperature_living_room')}}°C
+           
+
+##########################################################################
+###                       T U R N  O F F                               ###
+##########################################################################
+
+##################
+# Turn off cycle #
+##################
+
+#Copy this for every heatpump changing variables name to turn off HVAC and turn on radiators
+
+turn_off_cycle_living_room:
+  sequence:
+    # Turn off heatpump
+    - service: climate.turn_off
+      entity_id: climate.daikin_living_room
+    - delay: '00:00:05'
+    # Turn on radiators
+    - service: climate.turn_on
+      entity_id: climate.netatmo_living_room
+    # Send notification
+    - service: notify.telegram
+      data_template:
+        title: '*Heatpump Living Room*'
+        message: >
+            Turned off to reduce power consumption
+            
+            Meter Reading: {{states('sensor.meter_reading_filtered')}} W,
+            Temperature: {{states('sensor.temperature_living_room')}}°C
+        

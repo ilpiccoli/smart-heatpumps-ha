@@ -15,6 +15,7 @@ You need to copy this file into your *binary_sensor* folder or copy its content 
 - *binary_sensor.yaml* : Here are stored the two binary sensor to know which is the coldest HVAC stil to be turned on and the warmest to be turned off
 
 ## Sensors
-You need to copy this file into your *sensors* folder or copy its content into your *sensors.yaml* file or copy it under the *sensor:* part in your *configuration.yaml* file
+You need to copy this file into your *sensors* folder or copy its content into your *sensors.yaml* file or copy it under the *sensor:* part in your *configuration.yaml* file:
+- *template_sensors.yaml* : Here are stored the two sensors to know which HVAC is the next to be started and which the next to be stopped
 
 If you have any doubt on where to copy those files double check on [HomeAssistant official website](https://www.home-assistant.io)

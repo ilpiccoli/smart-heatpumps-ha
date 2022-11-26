@@ -1,0 +1,41 @@
+###############################################
+# TURN OFF LIVING ROOM HEATPUMP WHEN TOO WARM #
+###############################################
+#Copy this template for any heatpump you add, changing your preferred max temperature
+
+- id: Living_room_heatpump_OFF_solar
+  alias: Turn off living room heatpump when the room is too warm
+  description: 'Turn off living room heatpump when the room is too warm'
+  trigger:
+  # Temperature too high
+  - platform: numeric_state
+    entity_id: sensor.living_room_temperature
+    above: '19.5'
+  condition:
+  # Automation is on
+  - condition: state
+    entity_id: input_boolean.auto_heatpumps
+    state: 'on'
+  # PDC not already off
+  - condition: not
+    conditions: 
+    - condition: state
+      entity_id: climate.daikin_living_room
+      state: 'off'
+  action:
+  # Turn off heatpump
+  - service: climate.turn_off
+    entity_id: climate.daikin_living_room
+  - delay: '00:00:15'
+  # Turn on radiators
+  - service: climate.turn_on
+    entity_id: climate.netatmo_living_room
+  - delay: '00:01:00'
+  - service: notify.telegram
+    data_template:
+      title: '*Living Room Heatpump*'
+      message: >
+        Turned off
+        
+        Temperature: {{states('sensor.living_room_temperature')}}°C
+  

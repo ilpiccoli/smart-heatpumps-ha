@@ -4,7 +4,7 @@ This github repository will be regularly updated based on my tests and is made b
 I tried to write that in the most explanatory way so that it will be simple for anyone to adapt it to their needings.
 I hope it will help other people in the same situation as mine.
 
-Any hint, suggestion or comment on the *Discussion* page is really appreciated.
+Any hint, suggestion or comment on the [Discussion](https://github.com/ilpiccoli/smart-heatpumps-ha/discussions) page is really appreciated.
 
 If you want to support me you can [buy me a coffee](https://www.buymeacoffee.com/ilpiccoli).
 

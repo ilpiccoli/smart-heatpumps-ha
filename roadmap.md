@@ -11,3 +11,4 @@ Heatpumps are correctly working, i can comfortly heat my house "for free" by day
 - Rename all entities to make the code more flexible (e.g. use *input_text* rather than writing names into automations)
 - Re-write all in python
 - Create an add-on
+- User filtered temperature sensor to improve comfort

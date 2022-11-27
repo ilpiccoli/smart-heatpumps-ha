@@ -228,9 +228,8 @@
     entity_id: sensor.meter_reading_filtered
     above: '700'
     for: '00:45:00'
-  - platform: state
-    entity_id: sun.sun
-    to: 'below_horizon'
+  - platform: sun
+    event: sunset
   condition:
   action:
   - service: homeassistant.turn_off

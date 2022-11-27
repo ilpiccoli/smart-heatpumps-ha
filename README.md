@@ -14,7 +14,7 @@ Check if you satisfy all the pre-requisites in the [related](https://github.com/
 Follow the instructions on the [How to install](https://github.com/ilpiccoli/smart-heatpumps-ha/blob/main/how_to_install.md) file
 
 ## What's the purpose of this repository?
-I have 5 Daikin splits (1 Emura and 4 FTXM35N) and 2 motors (2MXM50M and 2MXM25M, respectively controlling 3 and 2 internal units) and a 4.14kWp photovoltaic system: the goal would be to exploit as much as i can the power from the solar panels to avoid using my radiators and so save money.
+I have 5 Daikin splits (1 Emura and 4 FTXM35N) and 2 motors (2MXM50M and 2MXM25M, respectively controlling 3 and 2 internal units) and a 4.14kWp photovoltaic system: the goal was to exploit as much solar power as i can to avoid using my radiators (or at least reduce their consumption) and so save money.
 
 You can find the data and *statistics* i learned during my tests in the [related page](https://github.com/ilpiccoli/smart-heatpumps-ha/blob/main/some_numbers.md)
 

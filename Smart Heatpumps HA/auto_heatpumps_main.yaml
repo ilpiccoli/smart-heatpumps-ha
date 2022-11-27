@@ -217,9 +217,9 @@
     target:
       entity_id: binary_sensor.start_heatpumps 
       
-##########################################
-# READING > 700W = TURN OFF START SENSOR #
-##########################################
+####################################################
+# READING > 700W or SUNSET = TURN OFF START SENSOR #
+####################################################
 - id: disable_start_heatpumps_700w
   alias: Disable binary sensor to start heatpumps if they were stopped for exceeding 700W
   description: 'Disable binary sensor to start heatpumps if they were stopped for exceeding 700W for 45 minutes'
@@ -228,6 +228,9 @@
     entity_id: sensor.meter_reading_filtered
     above: '700'
     for: '00:45:00'
+  - platform: state
+    entity_id: sun.sun
+    to: 'below_horizon'
   condition:
   action:
   - service: homeassistant.turn_off

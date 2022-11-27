@@ -3,7 +3,7 @@ Not all of them are necessary but you will need to manually remove them from aut
 If you want to use those automations in the most "plug and play" way i suggest you to name them in the same way as i did, in this way the automations will be already done and ready to work
 
 ## Sensors
-- *sensor.meter_reading_filtered* : a filtered sensor based on your meter reading sensor
+- *sensor.meter_reading_filtered* : you will need a meter reading sensor (like Shelly EM or Shelly 1PM etc) that can read your electricity grid meter (the entire automation is based on this, to reduce the amount of power you are buying from the grid), i suggest you to filter that via a [filter](https://www.home-assistant.io/integrations/filter/) to better absorb strange peaks of consumption that last a few seconds
 - The ones in *binary_sensors.yaml* file
 
 ## Timers

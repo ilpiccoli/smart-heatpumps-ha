@@ -1,4 +1,6 @@
 # How to install
+Check if you satisfy all the pre-requisites in the [related](https://github.com/ilpiccoli/smart-heatpumps-ha/blob/main/pre-requisites.md) page
+
 To install the "program" you simply need to copy the files in the folder [*Smart Heatpumps HA*](https://github.com/ilpiccoli/smart-heatpumps-ha/tree/main/Smart%20Heatpumps%20HA) in this way:
 
 ## Automations

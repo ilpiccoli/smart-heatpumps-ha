@@ -245,6 +245,11 @@
     platform: numeric_state
     entity_id: sensor.meter_reading_filtered
     above: '1000'
+  condition:
+    # Between sunrise and sunset
+  - condition: state
+    entity_id: sun.sun
+    state: "above_horizon"
   action:
   - service: timer.start
     target:
@@ -273,6 +278,11 @@
     platform: numeric_state
     entity_id: sensor.meter_reading_filtered
     below: '325'
+  condition:
+    # Between sunrise and sunset
+  - condition: state
+    entity_id: sun.sun
+    state: "above_horizon"
   action:
   - service: timer.start
     target:

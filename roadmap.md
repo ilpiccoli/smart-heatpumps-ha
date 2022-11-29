@@ -12,3 +12,4 @@ Heatpumps are correctly working, i can comfortly heat my house "for free" by day
 - Re-write all in python
 - Create an add-on
 - User filtered temperature sensor to improve comfort
+- Stop heatpump when above a "comfort" temperature when there is not enough solar production to power them all

@@ -19,4 +19,4 @@ If you want to use those automations in the most "plug and play" way i suggest y
 - Those described in `binary_sensors.yaml` file
 
 ## Input booleans
-- input_boolean.auto_heatpumps` : to quickly enable/disable and start the automation from lovelace frontend
+- `input_boolean.auto_heatpumps` : to quickly enable/disable and start the automation from lovelace frontend

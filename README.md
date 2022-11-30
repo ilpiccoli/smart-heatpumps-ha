@@ -31,23 +31,23 @@ Note pt2: All the automations are set to work only between sunrise and sunset, t
 The idea behind this set of automation is to run heat pumps "for free", maintaining my base consumption and using solar production to power them. I'll explain: I have a base consumption of ~700W by night, so I know that's my base consumption. As my heat pumps consume ~200W I set the automations to start when the meter reading (actual consumption - solar production) is below 325W, so that I can buy a maximum of 700W, as I did not have any solar panels.
 
 #### When any of these triggers is satisfied the automation tries to start:
-- Power consumption is below 325W in the last 5 minutes (so *binary_sensor.start_heatpumps* is ON)
-- Power consumption is below 1000W in the last 15 minutes (so *binary_sensor.stop_heatpumps_consumption* is OFF: that was made to let the heat pumps restart after a stop, for example, a dishwasher starting, cooking with induction hob, etc)
-- 10 minutes have passed since the last heat pump started (so *timer.wait_time_start_heatpump* has finished: that was made to avoid starting more heat pumps simultaneously, to reduce false positives from peak start consumption)
-- The automation was turned on (so *input_boolean.auto_heatpumps* is ON: that was made both to start immediately the automation if conditions are satisfied and to use this as a test trigger when changing some parameters in the YAML files)
+- Power consumption is below 325W in the last 5 minutes (so `binary_sensor.start_heatpumps` is ON)
+- Power consumption is below 1000W in the last 15 minutes (so `binary_sensor.stop_heatpumps_consumption` is OFF: that was made to let the heat pumps restart after a stop, for example, a dishwasher starting, cooking with induction hob, etc)
+- 10 minutes have passed since the last heat pump started (so `timer.wait_time_start_heatpump` has finished: that was made to avoid starting more heat pumps simultaneously, to reduce false positives from peak start consumption)
+- The automation was turned on (so `input_boolean.auto_heatpumps` is ON: that was made both to start immediately the automation if conditions are satisfied and to use this as a test trigger when changing some parameters in the YAML files)
 - Every 15 minutes, in any case
 
 
 #### If the automation was triggered, it checks if those conditions are satisfied:
 - Automation needs to be ON
-- *binary_sensor.start_heatpumps* needs to be ON (meaning that we have enough power to start heat pumps)
-Automation stop needs to be OFF (*binary_sensor.stop_heatpumps_consumption*, it means we haven't had a peak consumption, above 1000W, in the last 15 minutes)
+- `binary_sensor.start_heatpumps` needs to be ON (meaning that we have enough power to start heat pumps)
+Automation stop needs to be OFF (`binary_sensor.stop_heatpumps_consumption`, it means we haven't had a peak consumption, above 1000W, in the last 15 minutes)
 - Power consumption is below 600W, so we still have the margin to start another heat pump staying under 700W
-- Someone was home in the last 12 hours (so *binary_sensor.away_mode_heatpumps* is OFF: that was made because it has no sense to warm the house during holiday times, this means that we need to manually turn heat pumps on when returning home, the binary sensor turns back ON as soon as the first person enter the house zone)
+- Someone was home in the last 12 hours (so `binary_sensor.away_mode_heatpumps` is OFF: that was made because it has no sense to warm the house during holiday times, this means that we need to manually turn heat pumps on when returning home, the binary sensor turns back ON as soon as the first person enter the house zone)
 
 
 #### Now that the automation was triggered and conditions are satisfied, we can start the automation:
-It checks from *sensor.heatpump_to_start* which is the coldest room with HVAC off (to avoid starting again HVAC in a room still being warmed) and, if the temperature in that room is below the threshold, it refers to its specifical script file, in which there are specific instructions for that HVAC (in my case goal temperature, desired fan mode, ECO mode to avoid starting peak consumption, turning off thermostat scheduling to reduce gas consumptions, sending telegram notification, etc). A 10 minutes timer is started, after which it will check again if conditions are satisfied and eventually turn on another heat pump (if no other triggers are triggered before)
+It checks from `sensor.heatpump_to_start` which is the coldest room with HVAC off (to avoid starting again HVAC in a room still being warmed) and, if the temperature in that room is below the threshold, it refers to its specifical script file, in which there are specific instructions for that HVAC (in my case goal temperature, desired fan mode, ECO mode to avoid starting peak consumption, turning off thermostat scheduling to reduce gas consumptions, sending telegram notification, etc). A 10 minutes timer is started, after which it will check again if conditions are satisfied and eventually turn on another heat pump (if no other triggers are triggered before)
 
 
 #### When will the heat pumps stop?

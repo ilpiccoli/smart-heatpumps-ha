@@ -9,7 +9,7 @@ You need to copy those files into your *automations* folder or copy their conten
 - `auto_heatpump_single.yaml` : You can copy and rename this file for each heat pump you have, this is an extra file if you want to set specific conditions to turn off a single heat pump (in my case when the temperature in that specific room is too high)
 
 ## Scripts
-You need to copy this file into your *scripts* folder or copy its content into your `*scripts.yaml` file or copy it under the *scripts:* part in your `scripts.yaml` file:
+You need to copy this file into your *scripts* folder or copy its content into your `scripts.yaml` file or copy it under the *scripts:* part in your `scripts.yaml` file:
 - `scripts.yaml` : Here it is set all the scripts to turn on or off the heat pumps
 
 ## Binary sensors
